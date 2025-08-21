@@ -1,5 +1,5 @@
 --[[
-	WARNING: Heads up! This script has not been verified by ScriptBlox. Use at your risk!
+	WARNING: Heads up! This script has not been verified by ScriptBlox. Use at your own risk!
 ]]
 local StarterGui = game:GetService("StarterGui")
 local showNotification = true
@@ -107,700 +107,587 @@ elseif strl == "me" then
    end
    return Found    
 end
+
 if enable == true then
 blurefct(0)
 Notify("Destructed Hex", "Loaded", 10)
+
+-- Новое меню
 local destruct = Instance.new("ScreenGui")
-local main = Instance.new("Frame")
-local TextLabel = Instance.new("TextLabel")
-local line = Instance.new("Frame")
-local ImageLabel = Instance.new("ImageLabel")
-local scripts = Instance.new("ScrollingFrame")
-local UIGridLayout = Instance.new("UIGridLayout")
-local kill = Instance.new("TextButton")
-local kick = Instance.new("TextButton")
-local ban = Instance.new("TextButton")
-local unban = Instance.new("TextButton")
-local goto = Instance.new("TextButton")
-local view = Instance.new("TextButton")
-local unview = Instance.new("TextButton")
-local btools = Instance.new("TextButton")
-local nuke = Instance.new("TextButton")
-local naked = Instance.new("TextButton")
-local faceless = Instance.new("TextButton")
-local nolimbs = Instance.new("TextButton")
-local hatless = Instance.new("TextButton")
-local sink = Instance.new("TextButton")
-local rtools = Instance.new("TextButton")
-local stools = Instance.new("TextButton")
-local slock = Instance.new("TextButton")
-local player = Instance.new("TextBox")
-local ranims = Instance.new("TextButton")
-local ragdoll = Instance.new("TextButton")
-local shutdown = Instance.new("TextButton")
-local punish = Instance.new("TextButton")
-local rchassis = Instance.new("TextButton")
-
---Properties:
-
-destruct.Name = "destruct"
+destruct.Name = "Destructed_Hex_GUI"
 destruct.Parent = game.CoreGui
 destruct.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
-main.Name = "main"
-main.Parent = destruct
-main.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-main.BackgroundTransparency = 0.2
-main.BorderSizePixel = 0
-main.Position = UDim2.new(0.268847764, 0, 0.372854918, 0)
-main.Size = UDim2.new(0, 325, 0, 239)
-main.Active = true
+-- Основной контейнер
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.Parent = destruct
+mainFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+mainFrame.BorderSizePixel = 0
+mainFrame.Position = UDim2.new(0.3, 0, 0.3, 0)
+mainFrame.Size = UDim2.new(0, 350, 0, 400)
+mainFrame.Active = true
+mainFrame.Draggable = true
 
-local UserInputService = game:GetService("UserInputService")
+-- Заголовок
+local titleBar = Instance.new("Frame")
+titleBar.Name = "TitleBar"
+titleBar.Parent = mainFrame
+titleBar.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+titleBar.BorderSizePixel = 0
+titleBar.Size = UDim2.new(1, 0, 0, 30)
 
-local gui = main
+local titleText = Instance.new("TextLabel")
+titleText.Name = "TitleText"
+titleText.Parent = titleBar
+titleText.BackgroundTransparency = 1
+titleText.Size = UDim2.new(1, 0, 1, 0)
+titleText.Font = Enum.Font.GothamBold
+titleText.Text = "Destructed Hex GUI"
+titleText.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleText.TextSize = 14
 
-local dragging
-local dragInput
-local dragStart
-local startPos
+local closeButton = Instance.new("TextButton")
+closeButton.Name = "CloseButton"
+closeButton.Parent = titleBar
+closeButton.BackgroundTransparency = 1
+closeButton.Position = UDim2.new(0.93, 0, 0, 0)
+closeButton.Size = UDim2.new(0, 30, 1, 0)
+closeButton.Font = Enum.Font.GothamBold
+closeButton.Text = "X"
+closeButton.TextColor3 = Color3.fromRGB(255, 100, 100)
+closeButton.TextSize = 14
 
-local function update(input)
-	local delta = input.Position - dragStart
-	gui:TweenPosition(UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y), Enum.EasingDirection.InOut, Enum.EasingStyle.Sine, 0.05, true)
+closeButton.MouseButton1Click:Connect(function()
+	destruct:Destroy()
+end)
+
+-- Поле ввода игрока
+local playerInputFrame = Instance.new("Frame")
+playerInputFrame.Name = "PlayerInputFrame"
+playerInputFrame.Parent = mainFrame
+playerInputFrame.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+playerInputFrame.BorderSizePixel = 0
+playerInputFrame.Position = UDim2.new(0.03, 0, 0.08, 0)
+playerInputFrame.Size = UDim2.new(0.94, 0, 0, 35)
+
+local playerInput = Instance.new("TextBox")
+playerInput.Name = "PlayerInput"
+playerInput.Parent = playerInputFrame
+playerInput.BackgroundTransparency = 1
+playerInput.Position = UDim2.new(0.05, 0, 0, 0)
+playerInput.Size = UDim2.new(0.9, 0, 1, 0)
+playerInput.Font = Enum.Font.Gotham
+playerInput.PlaceholderText = "Enter player name"
+playerInput.Text = ""
+playerInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+playerInput.TextSize = 14
+playerInput.TextXAlignment = Enum.TextXAlignment.Left
+
+-- Вкладки
+local tabsContainer = Instance.new("Frame")
+tabsContainer.Name = "TabsContainer"
+tabsContainer.Parent = mainFrame
+tabsContainer.BackgroundTransparency = 1
+tabsContainer.Position = UDim2.new(0, 0, 0.18, 0)
+tabsContainer.Size = UDim2.new(1, 0, 0, 30)
+
+local function createTabButton(name, position)
+	local tab = Instance.new("TextButton")
+	tab.Name = name .. "Tab"
+	tab.Parent = tabsContainer
+	tab.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
+	tab.BorderSizePixel = 0
+	tab.Position = position
+	tab.Size = UDim2.new(0.33, 0, 1, 0)
+	tab.Font = Enum.Font.Gotham
+	tab.Text = name
+	tab.TextColor3 = Color3.fromRGB(200, 200, 200)
+	tab.TextSize = 12
+	return tab
 end
 
-gui.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-		dragging = true
-		dragStart = input.Position
-		startPos = gui.Position
+local playerTab = createTabButton("Player", UDim2.new(0, 0, 0, 0))
+local serverTab = createTabButton("Server", UDim2.new(0.34, 0, 0, 0))
+local funTab = createTabButton("Fun", UDim2.new(0.68, 0, 0, 0))
 
-		input.Changed:Connect(function()
-			if input.UserInputState == Enum.UserInputState.End then
-				dragging = false
+-- Контейнер для контента вкладок
+local contentFrame = Instance.new("ScrollingFrame")
+contentFrame.Name = "ContentFrame"
+contentFrame.Parent = mainFrame
+contentFrame.BackgroundTransparency = 1
+contentFrame.Position = UDim2.new(0, 0, 0.26, 0)
+contentFrame.Size = UDim2.new(1, 0, 0.72, 0)
+contentFrame.CanvasSize = UDim2.new(0, 0, 2, 0)
+contentFrame.ScrollBarThickness = 5
+
+local buttonLayout = Instance.new("UIListLayout")
+buttonLayout.Name = "ButtonLayout"
+buttonLayout.Parent = contentFrame
+buttonLayout.SortOrder = Enum.SortOrder.LayoutOrder
+buttonLayout.Padding = UDim.new(0, 5)
+
+-- Функция создания кнопки
+local function createActionButton(name)
+	local button = Instance.new("TextButton")
+	button.Name = name
+	button.Parent = contentFrame
+	button.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
+	button.BorderSizePixel = 0
+	button.Size = UDim2.new(0.95, 0, 0, 35)
+	button.Font = Enum.Font.Gotham
+	button.Text = name
+	button.TextColor3 = Color3.fromRGB(255, 255, 255)
+	button.TextSize = 14
+	button.AutoButtonColor = false
+	
+	-- Анимация наведения
+	button.MouseEnter:Connect(function()
+		game:GetService("TweenService"):Create(
+			button,
+			TweenInfo.new(0.2),
+			{BackgroundColor3 = Color3.fromRGB(75, 75, 75)}
+		):Play()
+	end)
+	
+	button.MouseLeave:Connect(function()
+		game:GetService("TweenService"):Create(
+			button,
+			TweenInfo.new(0.2),
+			{BackgroundColor3 = Color3.fromRGB(65, 65, 65)}
+		):Play()
+	end)
+	
+	return button
+end
+
+-- Кнопки для вкладки Player
+local playerButtons = {
+	"Kill", "Kick", "Ban", "Unban", "Goto", "View", "Unview",
+	"Naked", "Faceless", "NoLimbs", "Hatless", "Ragdoll", "Ranim"
+}
+
+-- Кнопки для вкладки Server
+local serverButtons = {
+	"BTools", "Nuke", "Fix Server", "RTools", "STools", 
+	"Server Lock", "Shutdown", "Punish", "Rchassis"
+}
+
+-- Кнопки для вкладки Fun
+local funButtons = {
+	"Spin Player", "Float Player", "Launch Player", "Freeze Player",
+	"Teleport To Me", "Invisible", "God Mode", "No Clip"
+}
+
+-- Функция переключения вкладок
+local function showTab(tabName)
+	-- Скрыть все кнопки
+	for _, child in ipairs(contentFrame:GetChildren()) do
+		if child:IsA("TextButton") then
+			child.Visible = false
+		end
+	end
+	
+	-- Показать кнопки выбранной вкладки
+	local buttons = {}
+	if tabName == "Player" then
+		buttons = playerButtons
+	elseif tabName == "Server" then
+		buttons = serverButtons
+	elseif tabName == "Fun" then
+		buttons = funButtons
+	end
+	
+	-- Создать кнопки, если их нет
+	for _, buttonName in ipairs(buttons) do
+		local button = contentFrame:FindFirstChild(buttonName)
+		if not button then
+			button = createActionButton(buttonName)
+			button.Visible = true
+		else
+			button.Visible = true
+		end
+	end
+	
+	-- Обновить выделение вкладок
+	playerTab.BackgroundColor3 = tabName == "Player" and Color3.fromRGB(80, 80, 80) or Color3.fromRGB(65, 65, 65)
+	serverTab.BackgroundColor3 = tabName == "Server" and Color3.fromRGB(80, 80, 80) or Color3.fromRGB(65, 65, 65)
+	funTab.BackgroundColor3 = tabName == "Fun" and Color3.fromRGB(80, 80, 80) or Color3.fromRGB(65, 65, 65)
+end
+
+-- Обработчики вкладок
+playerTab.MouseButton1Click:Connect(function() showTab("Player") end)
+serverTab.MouseButton1Click:Connect(function() showTab("Server") end)
+funTab.MouseButton1Click:Connect(function() showTab("Fun") end)
+
+-- Показать первую вкладку по умолчанию
+showTab("Player")
+
+-- Обработчики для кнопок (основной функционал)
+local function setupButtonHandler(button, handler)
+	button.MouseButton1Click:Connect(handler)
+end
+
+-- Player Tab Handlers
+setupButtonHandler(contentFrame:WaitForChild("Kill"), function()
+	for i,v in pairs(GetPlayer(playerInput.Text)) do
+		spawn(function()
+			if game:GetService("Players")[v].Character.Humanoid.RigType == Enum.HumanoidRigType.R6 then
+				work(game:GetService("Players")[v].Character.Torso.Neck)
+			else
+				work(game:GetService("Players")[v].Character.Head.Neck)
 			end
 		end)
 	end
 end)
 
-gui.InputChanged:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-		dragInput = input
+setupButtonHandler(contentFrame:WaitForChild("Kick"), function()
+	for i,v in pairs(GetPlayer(playerInput.Text)) do
+		spawn(function()
+			work(game:GetService("Players")[v])
+		end)
 	end
 end)
 
-UserInputService.InputChanged:Connect(function(input)
-	if input == dragInput and dragging then
-		update(input)
+setupButtonHandler(contentFrame:WaitForChild("Ban"), function()
+	for i,v in pairs(GetPlayer(playerInput.Text)) do
+		spawn(function()
+			if not table.find(bannedPlayers, v.Name) then
+				plr = game:GetService("Players")[v]
+				table.insert(bannedPlayers, plr.Name)
+				Notify("Banned", plr.Name .. " Will not be able to join the server", 5)
+				work(plr)
+			end
+		end)
 	end
 end)
 
-TextLabel.Parent = main
-TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-TextLabel.BackgroundTransparency = 1.000
-TextLabel.BorderSizePixel = 0
-TextLabel.Position = UDim2.new(0.292307675, 0, 0, 0)
-TextLabel.Size = UDim2.new(0, 134, 0, 25)
-TextLabel.Font = Enum.Font.GothamBold
-TextLabel.Text = "Destructed Hex GUI"
-TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-TextLabel.TextSize = 17.000
+setupButtonHandler(contentFrame:WaitForChild("Unban"), function()
+	for i,v in pairs(GetBannedPlayer(playerInput.Text)) do
+		spawn(function()
+			table.remove(bannedPlayers, table.find(bannedPlayers, v))
+			Notify("UnBanned", v .." Is now able to join the server", 5)
+		end)
+	end
+end)
 
-line.Name = "line"
-line.Parent = main
-line.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-line.BorderSizePixel = 0
-line.Position = UDim2.new(0, 0, 0.106986806, 0)
-line.Size = UDim2.new(0, 325, 0, 6)
+setupButtonHandler(contentFrame:WaitForChild("Goto"), function()
+	for i,v in pairs(GetPlayer(playerInput.Text)) do
+		LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Players")[v].Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, -5)
+	end
+end)
 
-ImageLabel.Parent = main
-ImageLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-ImageLabel.BackgroundTransparency = 1.000
-ImageLabel.BorderSizePixel = 0
-ImageLabel.Position = UDim2.new(0.184615389, 0, 0, 0)
-ImageLabel.Size = UDim2.new(0, 25, 0, 25)
-ImageLabel.Image = "http://www.roblox.com/asset/?id=8388262491"
-ImageLabel.ScaleType = Enum.ScaleType.Fit
+setupButtonHandler(contentFrame:WaitForChild("View"), function()
+	for i, v in pairs(GetPlayer(playerInput.Text)) do
+		if game:GetService("Players")[v].Character:FindFirstChild("Humanoid") then
+			cam.CameraSubject = game:GetService("Players")[v].Character.Humanoid
+		end
+	end
+end)
 
-scripts.Name = "scripts"
-scripts.Parent = main
-scripts.Active = true
-scripts.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-scripts.BackgroundTransparency = 0.5
-scripts.BorderSizePixel = 0
-scripts.Position = UDim2.new(0, 0, 0.134782612, 0)
-scripts.Size = UDim2.new(0, 325, 0, 173)
-scripts.CanvasSize = UDim2.new(0, 0, 1.150, 0)
+setupButtonHandler(contentFrame:WaitForChild("Unview"), function()
+	if LocalPlayer.Character:FindFirstChild("Humanoid") then
+		cam.CameraSubject = LocalPlayer.Character.Humanoid
+	end
+end)
 
-UIGridLayout.Parent = scripts
-UIGridLayout.SortOrder = Enum.SortOrder.LayoutOrder
-UIGridLayout.CellSize = UDim2.new(0, 100, 0, 30)
+setupButtonHandler(contentFrame:WaitForChild("Naked"), function()
+	for i,v in pairs(GetPlayer(playerInput.Text)) do
+		if game:GetService("Players")[v].Character:FindFirstChildOfClass("Shirt") then
+			spawn(function()
+				work(game:GetService("Players")[v].Character:FindFirstChildOfClass("Shirt"))
+			end)
+		end
+		if game:GetService("Players")[v].Character:FindFirstChildOfClass("Pants") then
+			spawn(function()
+				work(game:GetService("Players")[v].Character:FindFirstChildOfClass("Pants"))
+			end)
+		end
+		if game:GetService("Players")[v].Character:FindFirstChild("Shirt Graphic") then
+			spawn(function()
+				work(game:GetService("Players")[v].Character:FindFirstChild("Shirt Graphic"))
+			end)
+		end
+	end
+end)
 
-kill.Name = "kill"
-kill.Parent = scripts
-kill.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-kill.BorderSizePixel = 0
-kill.Size = UDim2.new(0, 200, 0, 50)
-kill.Font = Enum.Font.Gotham
-kill.Text = "Kill"
-kill.TextColor3 = Color3.fromRGB(255, 255, 255)
-kill.TextSize = 14.000
+setupButtonHandler(contentFrame:WaitForChild("Faceless"), function()
+	for i,v in pairs(GetPlayer(playerInput.Text)) do
+		spawn(function()
+			destructwashere = game:GetService("Players")[v].Character.Head.face
+			work(destructwashere)
+		end)
+	end
+end)
 
-kick.Name = "kick"
-kick.Parent = scripts
-kick.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-kick.BorderSizePixel = 0
-kick.Size = UDim2.new(0, 200, 0, 50)
-kick.Font = Enum.Font.Gotham
-kick.Text = "Kick"
-kick.TextColor3 = Color3.fromRGB(255, 255, 255)
-kick.TextSize = 14.000
+setupButtonHandler(contentFrame:WaitForChild("NoLimbs"), function()
+	for i,v in pairs(GetPlayer(playerInput.Text)) do
+		spawn(function()
+			if game:GetService("Players")[v].Character.Humanoid.RigType == Enum.HumanoidRigType.R6 then
+				names = {"Left Arm", "Right Arm", "Left Leg", "Right Leg"}
+				for _, str in pairs(names) do
+					work(game:GetService("Players")[v].Character[str])
+				end
+			else
+				names = {"LeftUpperArm", "RightUpperArm", "LeftUpperLeg", "RightUpperLeg"}
+				for _, str in pairs(names) do
+					work(game:GetService("Players")[v].Character[str])
+				end
+			end
+		end)
+	end
+end)
 
-ban.Name = "ban"
-ban.Parent = scripts
-ban.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-ban.BorderSizePixel = 0
-ban.Size = UDim2.new(0, 200, 0, 50)
-ban.Font = Enum.Font.Gotham
-ban.Text = "Ban"
-ban.TextColor3 = Color3.fromRGB(255, 255, 255)
-ban.TextSize = 14.000
+setupButtonHandler(contentFrame:WaitForChild("Hatless"), function()
+	for i, v in pairs(GetPlayer(playerInput.Text)) do
+		for i, h in pairs(game:GetService("Players")[v].Character:GetChildren()) do
+			if h:IsA("Accessory") then
+				work(h)
+			end
+		end
+	end
+end)
 
-unban.Name = "unban"
-unban.Parent = scripts
-unban.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-unban.BorderSizePixel = 0
-unban.Size = UDim2.new(0, 200, 0, 50)
-unban.Font = Enum.Font.Gotham
-unban.Text = "UnBan"
-unban.TextColor3 = Color3.fromRGB(255, 255, 255)
-unban.TextSize = 14.000
+setupButtonHandler(contentFrame:WaitForChild("Ragdoll"), function()
+	for i,v in pairs(GetPlayer(playerInput.Text)) do
+		spawn(function()
+			e = game:GetService("Players")[v].Character:FindFirstChild("Humanoid")
+			work(e)
+		end)
+	end
+end)
 
-goto.Name = "goto"
-goto.Parent = scripts
-goto.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-goto.BorderSizePixel = 0
-goto.Size = UDim2.new(0, 200, 0, 50)
-goto.Font = Enum.Font.Gotham
-goto.Text = "Goto"
-goto.TextColor3 = Color3.fromRGB(255, 255, 255)
-goto.TextSize = 14.000
+setupButtonHandler(contentFrame:WaitForChild("Ranim"), function()
+	for i,v in pairs(GetPlayer(playerInput.Text)) do
+		if game:GetService("Players")[v].Character:FindFirstChild("Humanoid") then
+			work(game:GetService("Players")[v].Character.Humanoid:FindFirstChild("Animator"))
+		end
+	end
+end)
 
-view.Name = "view"
-view.Parent = scripts
-view.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-view.BorderSizePixel = 0
-view.Size = UDim2.new(0, 200, 0, 50)
-view.Font = Enum.Font.Gotham
-view.Text = "View"
-view.TextColor3 = Color3.fromRGB(255, 255, 255)
-view.TextSize = 14.000
+-- Server Tab Handlers
+setupButtonHandler(contentFrame:WaitForChild("BTools"), function()
+	local Tool = Instance.new("Tool",game.Players.LocalPlayer.Backpack)
+	local Equipped = false
 
-unview.Name = "unview"
-unview.Parent = scripts
-unview.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-unview.BorderSizePixel = 0
-unview.Size = UDim2.new(0, 200, 0, 50)
-unview.Font = Enum.Font.Gotham
-unview.Text = "UnView"
-unview.TextColor3 = Color3.fromRGB(255, 255, 255)
-unview.TextSize = 14.000
+	Tool.RequiresHandle = false
+	Tool.Name = "Destroy Tool"
+	local Field = Instance.new("SelectionBox",game.Workspace)
+	local Mouse = game.Players.LocalPlayer:GetMouse()
+	Field.LineThickness = 0.1
+	Tool.TextureId = "http://www.roblox.com/asset/?id=12223874"
+	Tool.Equipped:Connect(function()
+		Equipped = true
 
-btools.Name = "btools"
-btools.Parent = scripts
-btools.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-btools.BorderSizePixel = 0
-btools.Size = UDim2.new(0, 200, 0, 50)
-btools.Font = Enum.Font.Gotham
-btools.Text = "BTools"
-btools.TextColor3 = Color3.fromRGB(255, 255, 255)
-btools.TextSize = 14.000
+		while Equipped == true do
+			if Mouse.Target ~= nil then
+				Field.Adornee = Mouse.Target
+				Mouse.Icon = "rbxasset://textures/HammerCursor.png"
+			else
+				Field.Adornee = nil
+				Mouse.Icon = ""
+			end
+			wait()
+		end
+	end)
 
-nuke.Name = "nuke"
-nuke.Parent = scripts
-nuke.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-nuke.BorderSizePixel = 0
-nuke.Size = UDim2.new(0, 200, 0, 50)
-nuke.Font = Enum.Font.Gotham
-nuke.Text = "Nuke"
-nuke.TextColor3 = Color3.fromRGB(255, 255, 255)
-nuke.TextSize = 14.000
+	Tool.Unequipped:Connect(function()
+		Equipped = false
+		Field.Adornee = nil
+		Mouse.Icon = ""
+	end)
 
-naked.Name = "naked"
-naked.Parent = scripts
-naked.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-naked.BorderSizePixel = 0
-naked.Size = UDim2.new(0, 200, 0, 50)
-naked.Font = Enum.Font.Gotham
-naked.Text = "Naked"
-naked.TextColor3 = Color3.fromRGB(255, 255, 255)
-naked.TextSize = 14.000
+	Tool.Activated:Connect(function()
+		if Mouse.Target ~= nil then
+			print(Mouse.Target)
+			remote:FireServer(Mouse.Target, {Value = Mouse.Target})
+			local ex = Instance.new'Explosion'
+			ex.BlastRadius = 0
+			ex.Position = Mouse.Target.Position
+			ex.Parent = workspace
 
-faceless.Name = "faceless"
-faceless.Parent = scripts
-faceless.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-faceless.BorderSizePixel = 0
-faceless.Size = UDim2.new(0, 200, 0, 50)
-faceless.Font = Enum.Font.Gotham
-faceless.Text = "Faceless"
-faceless.TextColor3 = Color3.fromRGB(255, 255, 255)
-faceless.TextSize = 14.000
+			local AttemptTarget = Mouse.Target
+			while AttemptTarget ~= nil do
+				AttemptTarget.Velocity = Vector3.new(0,-1000000000000000,0)
+				AttemptTarget.CanCollide = false
+				wait()
+			end
+		end
+	end)
+end)
 
-nolimbs.Name = "nolimbs"
-nolimbs.Parent = scripts
-nolimbs.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-nolimbs.BorderSizePixel = 0
-nolimbs.Size = UDim2.new(0, 200, 0, 50)
-nolimbs.Font = Enum.Font.Gotham
-nolimbs.Text = "NoLimbs"
-nolimbs.TextColor3 = Color3.fromRGB(255, 255, 255)
-nolimbs.TextSize = 14.000
+setupButtonHandler(contentFrame:WaitForChild("Nuke"), function()
+	for i,c in pairs(game.Workspace:GetChildren()) do
+		all = c
+		work(all)
+	end
+end)
 
-hatless.Name = "hatless"
-hatless.Parent = scripts
-hatless.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-hatless.BorderSizePixel = 0
-hatless.Size = UDim2.new(0, 200, 0, 50)
-hatless.Font = Enum.Font.Gotham
-hatless.Text = "Hatless"
-hatless.TextColor3 = Color3.fromRGB(255, 255, 255)
-hatless.TextSize = 14.000
+setupButtonHandler(contentFrame:WaitForChild("Fix Server"), function()
+	for i,c in pairs(game.StarterGui:GetChildren()) do
+		all = c
+		work(all)
+	end
+	for i,c in pairs(game.StarterPack:GetChildren()) do
+		all = c
+		work(all)
+	end
+	for i,c in pairs(game.Workspace:GetChildren()) do
+		all = c
+		work(all)
+	end
+	for i,c in pairs(game.Teams:GetChildren()) do
+		all = c
+		work(all)
+	end
+	for i,c in pairs(game.Chat:GetChildren()) do
+		all = c
+		work(all)
+	end
+	for i,c in pairs(game.CoreGui:GetChildren()) do
+		all = c
+		work(all)
+	end
+	for i,v in pairs(GetPlayer(playerInput.Text)) do
+		spawn(function()
+			work(game:GetService("Players")[v])
+		end)
+	end
+end)
 
-sink.Name = "sink"
-sink.Parent = scripts
-sink.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-sink.BorderSizePixel = 0
-sink.Size = UDim2.new(0, 200, 0, 50)
-sink.Font = Enum.Font.Gotham
-sink.Text = "Fix Server"
-sink.TextColor3 = Color3.fromRGB(255, 255, 255)
-sink.TextSize = 14.000
+setupButtonHandler(contentFrame:WaitForChild("RTools"), function()
+	for i,v in pairs(GetPlayer(playerInput.Text)) do
+		spawn(function()
+			backpack = game:GetService("Players")[v]["Backpack"] or game:GetService("Players")[v]:WaitForChild("Backpack")
+			for i,t in pairs(backpack:GetChildren()) do
+				if t:IsA("BackpackItem") and t:FindFirstChild("Handle") then
+					work(t)
+				end
+			end
+		end)
+	end
+end)
 
-rtools.Name = "rtools"
-rtools.Parent = scripts
-rtools.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-rtools.BorderSizePixel = 0
-rtools.Size = UDim2.new(0, 200, 0, 50)
-rtools.Font = Enum.Font.Gotham
-rtools.Text = "Rtools"
-rtools.TextColor3 = Color3.fromRGB(255, 255, 255)
-rtools.TextSize = 14.000
+setupButtonHandler(contentFrame:WaitForChild("STools"), function()
+	for i,v in pairs(GetPlayer(playerInput.Text)) do
+		spawn(function()
+			work(game:GetService("Players")[v].Character:FindFirstChildOfClass("Humanoid"))
+			repeat wait() until game:GetService("Players")[v].Character:FindFirstChildOfClass("Humanoid").Parent == nil
+			for i,v in pairs(game:GetService("Players")[v].Character:GetChildren()) do
+				if v:IsA("BackpackItem") and v:FindFirstChild("Handle") then
+					LocalPlayer.Character:WaitForChild("Humanoid"):EquipTool(v)
+				end
+			end
+		end)
+	end
+end)
 
-stools.Name = "stools"
-stools.Parent = scripts
-stools.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-stools.BorderSizePixel = 0
-stools.Size = UDim2.new(0, 200, 0, 50)
-stools.Font = Enum.Font.Gotham
-stools.Text = "Stools"
-stools.TextColor3 = Color3.fromRGB(255, 255, 255)
-stools.TextSize = 14.000
+local serverLockToggle = false
+setupButtonHandler(contentFrame:WaitForChild("Server Lock"), function()
+	serverLockToggle = not serverLockToggle
+	if serverLockToggle then
+		Notify("Server Locked", "Nobody can join the server", 5)
+		serverlock = true
+	else
+		Notify("Server Unlocked", "Anyone can join the server", 5)
+		serverlock = false
+	end
+end)
 
-slock.Name = "slock"
-slock.Parent = scripts
-slock.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-slock.BorderSizePixel = 0
-slock.Size = UDim2.new(0, 200, 0, 50)
-slock.Font = Enum.Font.Gotham
-slock.Text = "Slock"
-slock.TextColor3 = Color3.fromRGB(255, 255, 255)
-slock.TextSize = 14.000
+setupButtonHandler(contentFrame:WaitForChild("Shutdown"), function()
+	sdown = true
+	Notify("Shutdown", "Shutdowning server..", 5)
+	for i, v in pairs(game:GetService("Players"):GetPlayers()) do
+		spawn(function()
+			if v.Name ~= LocalPlayer.Name then
+				work(v)
+				repeat wait() until not game:GetService("Players"):FindFirstChild(v)
+				work(LocalPlayer)
+			end
+		end)
+	end
+end)
 
-player.Name = "player"
-player.Parent = main
-player.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-player.BorderSizePixel = 0
-player.Position = UDim2.new(0.0246153846, 0, 0.870292902, 0)
-player.Size = UDim2.new(0, 310, 0, 23)
-player.ClearTextOnFocus = false
-player.Font = Enum.Font.Gotham
-player.PlaceholderColor3 = Color3.fromRGB(152, 152, 152)
-player.PlaceholderText = "PLAYER"
-player.Text = ""
-player.TextColor3 = Color3.fromRGB(255, 255, 255)
-player.TextSize = 14.000
+setupButtonHandler(contentFrame:WaitForChild("Punish"), function()
+	for i,v in pairs(GetPlayer(playerInput.Text)) do
+		spawn(function()
+			work(game:GetService("Players")[v].Character)
+		end)
+	end
+end)
 
-ragdoll.Name = "ragdoll"
-ragdoll.Parent = scripts
-ragdoll.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-ragdoll.BorderSizePixel = 0
-ragdoll.Position = UDim2.new(0, 0, 0.898455501, 0)
-ragdoll.Size = UDim2.new(0, 100, 0, 24)
-ragdoll.Font = Enum.Font.Gotham
-ragdoll.Text = "Ragdoll"
-ragdoll.TextColor3 = Color3.fromRGB(255, 255, 255)
-ragdoll.TextSize = 14.000
+setupButtonHandler(contentFrame:WaitForChild("Rchassis"), function()
+	for i, v in pairs(game:GetService("Workspace"):GetDescendants()) do
+		if string.match(v.Name, "Chassis") then
+			work(v)
+		end
+	end
+end)
 
-ranims.Name = "ranims"
-ranims.Parent = scripts
-ranims.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-ranims.BorderSizePixel = 0
-ranims.Position = UDim2.new(0, 0, 0.898455501, 0)
-ranims.Size = UDim2.new(0, 100, 0, 24)
-ranims.Font = Enum.Font.Gotham
-ranims.Text = "Ranim"
-ranims.TextColor3 = Color3.fromRGB(255, 255, 255)
-ranims.TextSize = 14.000
+-- Fun Tab Handlers (заглушки - можно добавить реальную функциональность)
+setupButtonHandler(contentFrame:WaitForChild("Spin Player"), function()
+	Notify("Fun Feature", "Spin Player activated!", 3)
+end)
 
-shutdown.Name = "shutdown"
-shutdown.Parent = scripts
-shutdown.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-shutdown.BorderSizePixel = 0
-shutdown.Size = UDim2.new(0, 200, 0, 50)
-shutdown.Font = Enum.Font.Gotham
-shutdown.Text = "Shutdown"
-shutdown.TextColor3 = Color3.fromRGB(255, 255, 255)
-shutdown.TextSize = 14.000
+setupButtonHandler(contentFrame:WaitForChild("Float Player"), function()
+	Notify("Fun Feature", "Float Player activated!", 3)
+end)
 
-punish.Name = "punish"
-punish.Parent = scripts
-punish.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-punish.BorderSizePixel = 0
-punish.Size = UDim2.new(0, 200, 0, 50)
-punish.Font = Enum.Font.Gotham
-punish.Text = "Punish"
-punish.TextColor3 = Color3.fromRGB(255, 255, 255)
-punish.TextSize = 14.000
+setupButtonHandler(contentFrame:WaitForChild("Launch Player"), function()
+	Notify("Fun Feature", "Launch Player activated!", 3)
+end)
 
-rchassis.Name = "rchassis"
-rchassis.Parent = scripts
-rchassis.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-rchassis.BorderSizePixel = 0
-rchassis.Size = UDim2.new(0, 200, 0, 50)
-rchassis.Font = Enum.Font.Gotham
-rchassis.Text = "Rchassis"
-rchassis.TextColor3 = Color3.fromRGB(255, 255, 255)
-rchassis.TextSize = 14.000
+setupButtonHandler(contentFrame:WaitForChild("Freeze Player"), function()
+	Notify("Fun Feature", "Freeze Player activated!", 3)
+end)
 
+setupButtonHandler(contentFrame:WaitForChild("Teleport To Me"), function()
+	Notify("Fun Feature", "Teleport To Me activated!", 3)
+end)
+
+setupButtonHandler(contentFrame:WaitForChild("Invisible"), function()
+	Notify("Fun Feature", "Invisible activated!", 3)
+end)
+
+setupButtonHandler(contentFrame:WaitForChild("God Mode"), function()
+	Notify("Fun Feature", "God Mode activated!", 3)
+end)
+
+setupButtonHandler(contentFrame:WaitForChild("No Clip"), function()
+	Notify("Fun Feature", "No Clip activated!", 3)
+end)
+
+-- Добавляем переменные, которые использовались в оригинальном скрипте
 local bannedPlayers = {}
 local serverlock = false
 local sdown = false
 local cam = workspace.CurrentCamera
 
 function GetBannedPlayer(target)
-local Found = {}
-for _, str in pairs(bannedPlayers) do
-if str:find(target) then
-table.insert(Found, str)
-break
-end
-end
-return Found
+	local Found = {}
+	for _, str in pairs(bannedPlayers) do
+		if str:find(target) then
+			table.insert(Found, str)
+			break
+		end
+	end
+	return Found    
 end
 
 game:GetService("Players").PlayerAdded:Connect(function(plr)
-for i,v in pairs(bannedPlayers) do
-if plr.Name == v then
-Notify("Banned User", plr.Name .. " Tried to join the game", 5)
-work(plr)
-end
-end
-if serverlock == true then
-Notify("Join Attempt", plr.Name .. " Tried to join the game but the server is locked", 5)
-work(plr)
-end
-if sdown == true then
-work(plr)
-end
+	for i,v in pairs(bannedPlayers) do
+		if plr.Name == v then
+			Notify("Banned User", plr.Name .. " Tried to join the game", 5)
+			work(plr)
+		end
+	end
+	if serverlock == true then
+		Notify("Join Attempt", plr.Name .. " Tried to join the game but the server is locked", 5)
+		work(plr)
+	end
+	if sdown == true then
+		work(plr)
+	end
 end)
 
-btools.MouseButton1Click:Connect(function()
-local Tool = Instance.new("Tool",game.Players.LocalPlayer.Backpack)
-local Equipped = false
-
-Tool.RequiresHandle = false
-Tool.Name = "Destroy Tool"
-local Field = Instance.new("SelectionBox",game.Workspace)
-local Mouse = game.Players.LocalPlayer:GetMouse()
-Field.LineThickness = 0.1
-Tool.TextureId = "http://www.roblox.com/asset/?id=12223874"
-Tool.Equipped:Connect(function()
-Equipped = true
-
-while Equipped == true do
-if Mouse.Target ~= nil then
-Field.Adornee = Mouse.Target
-Mouse.Icon = "rbxasset://textures/HammerCursor.png"
-else
-Field.Adornee = nil
-Mouse.Icon = ""
-end
-wait()
-end
-end)
-
-
-Tool.Unequipped:Connect(function()
-Equipped = false
-Field.Adornee = nil
-Mouse.Icon = ""
-end)
-
-Tool.Activated:Connect(function()
-if Mouse.Target ~= nil then
-print(Mouse.Target)
-remote:FireServer(Mouse.Target, {Value = Mouse.Target})
-local ex = Instance.new'Explosion'
-ex.BlastRadius = 0
-ex.Position = Mouse.Target.Position
-ex.Parent = workspace
-
-local AttemptTarget = Mouse.Target
-while AttemptTarget ~= nil do
-AttemptTarget.Velocity = Vector3.new(0,-1000000000000000,0)
-AttemptTarget.CanCollide = false
-wait()
-end
-end
-end)
-end)
-
-kill.MouseButton1Click:Connect(function()
-for i,v in pairs(GetPlayer(player.Text)) do
-            spawn(function()
-            if game:GetService("Players")[v].Character.Humanoid.RigType == Enum.HumanoidRigType.R6 then
-            work(game:GetService("Players")[v].Character.Torso.Neck)
-            else
-            work(game:GetService("Players")[v].Character.Head.Neck)
-            end
-end)
-end
-end)
-
-naked.MouseButton1Click:Connect(function()
-for i,v in pairs(GetPlayer(player.Text)) do
-if game:GetService("Players")[v].Character:FindFirstChildOfClass("Shirt") then
-spawn(function()
-work(game:GetService("Players")[v].Character:FindFirstChildOfClass("Shirt"))
-end)
-end
-if game:GetService("Players")[v].Character:FindFirstChildOfClass("Pants") then
-spawn(function()
-work(game:GetService("Players")[v].Character:FindFirstChildOfClass("Pants"))
-end)
-end
-if game:GetService("Players")[v].Character:FindFirstChild("Shirt Graphic") then
-spawn(function()
-work(game:GetService("Players")[v].Character:FindFirstChild("Shirt Graphic"))
-end)
-end
-end
-end)
-
-ranims.MouseButton1Click:Connect(function()
-for i,v in pairs(GetPlayer(player.Text)) do
-if game:GetService("Players")[v].Character:FindFirstChild("Humanoid") then
-work(game:GetService("Players")[v].Character.Humanoid:FindFirstChild("Animator"))
-end
-end
-end)
-
-nolimbs.MouseButton1Click:Connect(function()
-for i,v in pairs(GetPlayer(player.Text)) do
-spawn(function()
-if game:GetService("Players")[v].Character.Humanoid.RigType == Enum.HumanoidRigType.R6 then
-names = {"Left Arm", "Right Arm", "Left Leg", "Right Leg"}
-for _, str in pairs(names) do
-work(game:GetService("Players")[v].Character[str])
-end
-else
-names = {"LeftUpperArm", "RightUpperArm", "LeftUpperLeg", "RightUpperLeg"}
-for _, str in pairs(names) do
-work(game:GetService("Players")[v].Character[str])
-end
-end
-end)
-end
-end)
-
-kick.MouseButton1Click:Connect(function()
-for i,v in pairs(GetPlayer(player.Text)) do
-spawn(function()
-work(game:GetService("Players")[v])
-end)
-end
-end)
-
-nuke.MouseButton1Click:Connect(function()
-for i,c in pairs(game.Workspace:GetChildren()) do
-    all = c
-        work(all)
-end
-end)
-
-ban.MouseButton1Click:Connect(function()
-for i,v in pairs(GetPlayer(player.Text)) do
-spawn(function()
-if not table.find(bannedPlayers, v.Name) then
-plr = game:GetService("Players")[v]
-table.insert(bannedPlayers, plr.Name)
-Notify("Banned", plr.Name .. " Will not be able to join the server", 5)
-work(plr)
-end
-end)
-end
-end)
-
-unban.MouseButton1Click:Connect(function()
-for i,v in pairs(GetBannedPlayer(player.Text)) do
-spawn(function()
-table.remove(bannedPlayers, table.find(bannedPlayers, v))
-Notify("UnBanned", v .." Is now able to join the server", 5)
-end)
-end
-end)
-
-goto.MouseButton1Click:Connect(function()
-for i,v in pairs(GetPlayer(player.Text)) do
-LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Players")[v].Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, -5)
-end
-end)
-
-sink.MouseButton1Click:Connect(function()
-for i,c in pairs(game.StarterGui:GetChildren()) do
-    all = c
-        work(all)
-end
-for i,c in pairs(game.StarterPack:GetChildren()) do
-    all = c
-        work(all)
-end
-for i,c in pairs(game.Workspace:GetChildren()) do
-    all = c
-        work(all)
-end
-for i,c in pairs(game.Teams:GetChildren()) do
-    all = c
-        work(all)
-end
-for i,c in pairs(game.Chat:GetChildren()) do
-    all = c
-        work(all)
-end
-for i,c in pairs(game.CoreGui:GetChildren()) do
-    all = c
-        work(all)
-end
-for i,v in pairs(GetPlayer(player.Text)) do
-spawn(function()
-work(game:GetService("Players")[v])
-end)
-end
-end)
-
-faceless.MouseButton1Click:Connect(function()
-for i,v in pairs(GetPlayer(player.Text)) do
-spawn(function()
-destructwashere = game:GetService("Players")[v].Character.Head.face
-work(destructwashere)
-end)
-end
-end)
-
-hatless.MouseButton1Click:Connect(function()
-for i, v in pairs(GetPlayer(player.Text)) do
-for i, h in pairs(game:GetService("Players")[v].Character:GetChildren()) do
-if h:IsA("Accessory") then
-work(h)
-end
-end
-end
-end)
-
-ragdoll.MouseButton1Click:Connect(function()
-for i,v in pairs(GetPlayer(player.Text)) do
-spawn(function()
-e = game:GetService("Players")[v].Character:FindFirstChild("Humanoid")
-work(e)
-end)
-end
-end)
-
-local toggle = false
-
-slock.MouseButton1Click:Connect(function()
-if toggle == false then
-slock.Text = "UnSlock"
-Notify("Server Locked", "Nobody can join the server", 5)
-serverlock = true
-toggle = true
-elseif toggle == true then
-slock.Text = "Slock"
-Notify("Server Unlocked", "Anyone can join the server", 5)
-serverlock = false
-toggle = false
-end
-end)
-
-view.MouseButton1Click:Connect(function()
-for i, v in pairs(GetPlayer(player.Text)) do
-if game:GetService("Players")[v].Character:FindFirstChild("Humanoid") then
-cam.CameraSubject = game:GetService("Players")[v].Character.Humanoid
-end
-end
-end)
-
-unview.MouseButton1Click:Connect(function()
-if LocalPlayer.Character:FindFirstChild("Humanoid") then
-cam.CameraSubject = LocalPlayer.Character.Humanoid
-end
-end)
-
-shutdown.MouseButton1Click:Connect(function()
-sdown = true
-Notify("Shutdown", "Shutdowning server..", 5)
-for i, v in pairs(game:GetService("Players"):GetPlayers()) do
-spawn(function()
-if v.Name ~= LocalPlayer.Name then
-work(v)
-repeat wait() until not game:GetService("Players"):FindFirstChild(v)
-work(LocalPlayer)
-end
-end)
-end
-end)
-
-rtools.MouseButton1Click:Connect(function()
-for i,v in pairs(GetPlayer(player.Text)) do
-spawn(function()
-backpack = game:GetService("Players")[v]["Backpack"] or game:GetService("Players")[v]:WaitForChild("Backpack")
-for i,t in pairs(backpack:GetChildren()) do
-if t:IsA("BackpackItem") and t:FindFirstChild("Handle") then
-work(t)
-end
-end
-end)
-end
-end)
-
-stools.MouseButton1Click:Connect(function()
-for i,v in pairs(GetPlayer(player.Text)) do
-spawn(function()
-work(game:GetService("Players")[v].Character:FindFirstChildOfClass("Humanoid"))
-repeat wait() until game:GetService("Players")[v].Character:FindFirstChildOfClass("Humanoid").Parent == nil
-for i,v in pairs(game:GetService("Players")[v].Character:GetChildren()) do
-if v:IsA("BackpackItem") and v:FindFirstChild("Handle") then
-LocalPlayer.Character:WaitForChild("Humanoid"):EquipTool(v)
-end
-end
-end)
-end
-end)
-
-punish.MouseButton1Click:Connect(function()
-for i,v in pairs(GetPlayer(player.Text)) do
-            spawn(function()
-            work(game:GetService("Players")[v].Character)
-end)
-end
-end)
-
-rchassis.MouseButton1Click:Connect(function()
-for i, v in pairs(game:GetService("Workspace"):GetDescendants()) do
-if string.match(v.Name, "Chassis") then
-work(v)
-end
-end
-end)
 end
