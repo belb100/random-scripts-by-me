@@ -1,6 +1,4 @@
---[[
-	WARNING: Heads up! This script has not been verified by ScriptBlox. Use at your own risk!
-]]
+print('test')
 local StarterGui = game:GetService("StarterGui")
 local showNotification = true
 
